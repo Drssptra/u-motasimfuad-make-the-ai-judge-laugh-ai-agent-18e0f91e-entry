@@ -11,6 +11,16 @@ const CONFESSION =
 const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 const outputPath = join(outputDir, "entry.txt");
 
+// Gate: the entry must be 1 to 200 characters. Refuse to write it
+// rather than emit a line the scorer would reject as invalid.
+const MAX_ENTRY_CHARS = 200;
+if ([...CONFESSION].length > MAX_ENTRY_CHARS) {
+  process.stderr.write(
+    `error: entry is ${[...CONFESSION].length} characters, exceeding the ${MAX_ENTRY_CHARS}-character gate\n`,
+  );
+  process.exit(1);
+}
+
 mkdirSync(outputDir, { recursive: true });
 writeFileSync(outputPath, CONFESSION, "utf8");
 process.stdout.write(CONFESSION + "\n");
